@@ -100,13 +100,12 @@ class MemberOnlyIndex(Resource):
 class MemberOnlyArticle(Resource):
     
     def get(self, id):
-        article = Article.query.filter(Article.id == id).first()
+        article = Article.query.filter(Article.id == id, Article.is_member_only == True).first()
         
-        if article is None or article.is_member_only == False:
+        if article is None:
             return jsonify({'error': 'Article not found or not accessible'}), 404
         
-        if article.is_member_only == True:
-            return jsonify(article.to_dict())
+        return jsonify(article.to_dict())
 
 api.add_resource(ClearSession, '/clear', endpoint='clear')
 api.add_resource(IndexArticle, '/articles', endpoint='article_list')
